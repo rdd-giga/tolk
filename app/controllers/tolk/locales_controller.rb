@@ -2,6 +2,7 @@ module Tolk
   class LocalesController < Tolk::ApplicationController
     before_filter :find_locale, :only => [:show, :all, :update, :updated]
     before_filter :ensure_no_primary_locale, :only => [:all, :update, :show, :updated]
+    respond_to :html, :atom, :yaml
 
     def index
       @locales = Tolk::Locale.secondary_locales
@@ -25,6 +26,7 @@ module Tolk
 
     def all
       @phrases = @locale.phrases_with_translation(params[:page])
+      respond_with @phrases, :stream => true   # streaming is necessary (rails bug?)
     end
 
     def updated
